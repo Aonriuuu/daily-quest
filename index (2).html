@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07080c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Daily Quest">
+<title>Daily Quest</title>
+<style>
+:root{--bg:#07080c;--s1:#0f111a;--s2:#161926;--s3:#1d2133;--card:var(--s1);--bd:rgba(255,255,255,.08);--bd2:rgba(139,92,246,.4);--tx:#eef0f8;--mu:#9097ae;--ac:#8b5cf6;--ac2:#3bc3ff;--ok:#3ddc97;--bad:#ff6b7a;--warn:#ffcf6b;--hdr:rgba(7,8,12,.84);--sh:0 8px 24px rgba(0,0,0,.28);--gl:0 0 22px rgba(139,92,246,.28);color-scheme:dark}
+[data-theme=light]{--bg:#eef0f6;--s1:#fff;--s2:#f7f8fc;--s3:#e6e9f3;--bd:rgba(20,24,40,.1);--bd2:rgba(109,64,230,.35);--tx:#141726;--mu:#586080;--ok:#119b63;--bad:#d63a4d;--warn:#a96d00;--hdr:rgba(238,240,246,.88);--sh:0 6px 18px rgba(30,40,90,.1);--gl:0 4px 16px rgba(109,64,230,.16);color-scheme:light}
+[data-theme=light]{--ac2:#0a78b8}
+[data-theme=light] .pts,[data-theme=light] .amt.big,[data-theme=light] #lvup b{background-image:linear-gradient(135deg,#6d40e6,#0a78b8)}
+[data-theme=light] .pt{background:rgba(10,120,184,.09);border-color:rgba(10,120,184,.35)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--tx);font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;font-variant-numeric:tabular-nums;background:radial-gradient(120% 50% at 50% -8%,rgba(139,92,246,.17),transparent 62%),var(--bg);padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--hdr);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);padding:calc(10px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid var(--bd)}
+.hud{display:flex;align-items:center;gap:14px;max-width:640px;margin:auto}
+.lv{width:54px;height:54px;border-radius:17px;background:linear-gradient(145deg,#9a6bff,#4f7dff 70%,#3bc3ff);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:22px;line-height:1;color:#fff;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.18) inset,0 0 20px rgba(110,90,255,.5)}
+.lv::before{content:"LV";font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.8;margin-bottom:2px}
+.hx{flex:1;min-width:0}.hx b{font-size:17px;font-weight:700}.hx small{color:var(--mu);font-size:13px}
+.pts{position:relative;text-align:right;font-weight:800;font-size:26px;line-height:1;background:linear-gradient(135deg,#c4b0ff,var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pts small{display:block;color:var(--mu);-webkit-text-fill-color:var(--mu);font-weight:500;font-size:12px;margin-top:3px}
+#pp{display:inline-block}
+.bar{height:10px;border-radius:6px;background:var(--s3);overflow:hidden;margin:6px 0;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.bar.lg{height:12px}
+.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--ac),var(--ac2));box-shadow:0 0 10px rgba(80,150,255,.55);transition:none}
+main{padding:16px;max-width:640px;margin:auto}
+h2{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mu);font-weight:650;letter-spacing:.02em;margin:24px 2px 10px}
+h2 .ct{font-size:12px;font-weight:700;color:var(--tx);background:var(--s3);border-radius:10px;padding:1px 8px}
+h3{margin:0 0 12px;font-size:20px}
+.card{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,var(--sh)}
+.hero{border-color:var(--bd2);box-shadow:var(--gl),0 1px 0 rgba(255,255,255,.05) inset}
+.hero .dt{font-size:19px;font-weight:750}.fr{font-size:20px;font-weight:800}
+.q{display:flex;align-items:center;gap:12px}
+.qi{font-size:22px;width:46px;height:46px;display:grid;place-items:center;background:var(--s3);border:1px solid var(--bd);border-radius:14px;flex:none}
+.qb{flex:1;min-width:0}.qb b{display:block;font-size:16.5px;font-weight:650;line-height:1.25}
+.qb small,small{color:var(--mu);font-size:13px}.ds{display:block;margin-top:2px}
+.mt{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.pt{font-weight:800;font-size:13px;color:var(--ac2);background:rgba(59,195,255,.1);border:1px solid rgba(59,195,255,.28);border-radius:999px;padding:1px 9px}
+.tg{font-size:12px;color:var(--mu);background:var(--s3);border-radius:7px;padding:2px 8px}.tg.ph{color:var(--warn)}
+.qc{position:relative;overflow:hidden}
+.qc.ready::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(var(--ac),var(--ac2))}
+.qc.done{border-color:rgba(61,220,151,.4);background:linear-gradient(180deg,rgba(61,220,151,.09),var(--s1))}
+.qc.done .qi{background:linear-gradient(145deg,#2fcf8a,#1c9f78);border-color:transparent;color:#04130c;font-weight:800;box-shadow:0 0 14px rgba(61,220,151,.4)}
+.qc.done .qb b{color:var(--mu)}
+.qc.locked,.qc.paused{border-style:dashed;box-shadow:none;background:var(--s1)}
+.qc.locked .qi,.qc.paused .qi{opacity:.5;filter:grayscale(1)}.qc.locked .qb b,.qc.paused .qb b{color:var(--mu)}
+.btn{background:linear-gradient(135deg,#8b5cf6,#5b7cff);color:#fff;border:0;border-radius:13px;padding:12px 18px;font:650 15px inherit;font-family:inherit;min-height:46px;box-shadow:0 4px 14px rgba(100,90,255,.35);transition:transform .12s}
+.btn:active{transform:scale(.96)}.btn.sm{padding:10px 16px;min-height:44px}
+.btn.ghost{background:transparent;border:1px solid var(--bd);color:var(--tx);box-shadow:none}.btn.bad{background:linear-gradient(135deg,#ff6b7a,#d63a5d);box-shadow:none}.btn:disabled{opacity:.38;box-shadow:none}
+.chip{font-size:13px;font-weight:600;color:var(--mu);border:1px solid var(--bd);background:var(--s3);border-radius:20px;padding:7px 12px;white-space:nowrap}.chip.ok{color:var(--ok);border-color:rgba(61,220,151,.45);background:rgba(61,220,151,.1)}
+.lnk{background:none;border:0;color:var(--ac2);font:inherit;font-weight:600;padding:10px 0 0;min-height:44px;min-width:56px;text-align:left}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--hdr);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{position:relative;flex:1;background:none;border:0;color:var(--mu);padding:9px 0 7px;font:600 12px inherit;font-family:inherit;min-height:58px}
+nav button span{display:block;height:26px}nav svg{display:block;margin:0 auto 2px}
+nav button.on{color:var(--ac2)}nav button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,var(--ac),var(--ac2));box-shadow:0 0 12px var(--ac2)}
+label{display:block;margin:12px 0;font-size:14px;color:var(--mu)}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:12px;font:16px inherit;font-family:inherit;margin-top:5px}
+input[type=checkbox]{width:auto;margin-right:8px}
+:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.days{display:flex;gap:6px;margin:8px 0}.day{flex:1;min-height:44px;border-radius:11px;border:1px solid var(--bd);background:var(--s3);color:var(--mu);font:650 14px inherit}.day.on{background:linear-gradient(135deg,var(--ac),#5b7cff);border-color:transparent;color:#fff}
+#modal{position:fixed;inset:0;background:rgba(2,3,8,.66);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;align-items:flex-end;z-index:10}#modal.open{display:flex}
+.sheet{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bd2);border-bottom:0;width:100%;max-width:640px;margin:auto;border-radius:24px 24px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4);animation:up .22s}
+@keyframes up{from{transform:translateY(30px);opacity:0}}
+.sheet img{width:100%;border-radius:12px;margin:8px 0}
+#err{color:var(--bad);font-size:14px;min-height:18px}
+#toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top));transform:translate(-50%,-20px);background:linear-gradient(135deg,var(--ac),#5b7cff);color:#fff;padding:11px 20px;border-radius:26px;font-weight:700;box-shadow:var(--gl);opacity:0;pointer-events:none;transition:.3s;z-index:20;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.empty{text-align:center;color:var(--mu);padding:28px 12px;border:1px dashed var(--bd);border-radius:18px;margin-bottom:12px}
+.amt{font-weight:800}.amt.big{font-size:38px;line-height:1.1;background:linear-gradient(135deg,#c4b0ff,var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}.pos{color:var(--ok)}.neg{color:var(--bad)}
+.tier .tp{font-size:22px;font-weight:800}.tier.aff{border-color:var(--bd2);box-shadow:var(--gl),var(--sh)}
+#xb.anim{transition:width .7s cubic-bezier(.2,.8,.2,1)}
+#gn{position:absolute;right:0;top:100%;pointer-events:none}
+.gain{display:block;font-size:17px;-webkit-text-fill-color:var(--ok);color:var(--ok);animation:gain 1.2s ease-out both}
+@keyframes gain{0%{opacity:0;transform:translateY(2px) scale(.8)}15%{opacity:1;transform:translateY(8px) scale(1.1)}100%{opacity:0;transform:translateY(30px)}}
+#pp.bump{animation:bump .45s ease-out}
+@keyframes bump{40%{transform:scale(1.18)}}
+.qc.just{animation:done .7s ease-out}.qc.just .qi{animation:chk .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes done{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}60%{box-shadow:0 0 0 10px rgba(61,220,151,0)}}
+@keyframes chk{from{transform:scale(.4) rotate(-20deg)}}
+#lvup{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:30;background:radial-gradient(circle at 50% 45%,rgba(139,92,246,.38),transparent 62%);animation:lvf 2.4s both}
+#lvup div{text-align:center;padding:22px 40px;border-radius:24px;background:var(--s2);border:1px solid var(--bd2);box-shadow:var(--gl),0 0 60px rgba(59,195,255,.28);animation:lvr .55s cubic-bezier(.2,1.3,.3,1)}
+#lvup small{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--ac2)}
+#lvup b{display:block;font-size:38px;line-height:1.15;background:linear-gradient(135deg,#c4b0ff,var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes lvf{0%{opacity:0}12%,80%{opacity:1}100%{opacity:0}}
+@keyframes lvr{from{transform:scale(.6);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header><div class="hud"><div class="lv" id="lv">1</div><div class="hx"><b id="xt">XP</b><div class="bar"><i id="xb"></i></div><small id="xs"></small></div><div class="pts"><span id="pp">0</span><small>points</small><i id="gn"></i></div></div></header>
+<main id="main"></main>
+<nav id="nav"></nav><div id="modal"></div><div id="toast"></div>
+<input type="file" id="imp" accept="application/json,.json" hidden>
+<script>
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+// ---- calendar periods (all from LOCAL date parts, so DST-safe) ----
+const dKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const weekKey=d=>{const m=new Date(d.getFullYear(),d.getMonth(),d.getDate());m.setDate(m.getDate()-((m.getDay()+6)%7));return dKey(m)}; // Monday start
+const monKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+const periodOf=(q,d)=>q.freq==='daily'?dKey(d):q.freq==='weekly'?weekKey(d):monKey(d);
+const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],ORD=[1,2,3,4,5,6,0];
+const dn=a=>a.length===7?'Daily':ORD.filter(d=>a.includes(d)).map(d=>DN[d]).join(' ');
+// ---- IndexedDB ----
+const STORES=['quests','completions','progress','ledger','redemptions','wishlist','photos','meta'];
+let db,S={},view='dash',PH=null,PEND=null,FX=null,EQ=null,curDay='',busy=false;
+const openDB=()=>new Promise((res,rej)=>{const r=indexedDB.open('dailyquest',1);r.onupgradeneeded=()=>{const d=r.result;STORES.forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n,{keyPath:'id'})})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const all=s=>new Promise((res,rej)=>{const r=db.transaction(s).objectStore(s).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const getP=id=>new Promise((res,rej)=>{const r=db.transaction('photos').objectStore('photos').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const tx=(st,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,'readwrite'),o={};st.forEach(s=>o[s]=t.objectStore(s));try{fn(o)}catch(e){t.abort();return rej(e)}t.oncomplete=res;t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error('aborted'))});
+// ---- seed quests ----
+const D7=[0,1,2,3,4,5,6];
+const mk=(id,name,cat,freq,points,o={})=>({id,name,cat,freq,points,desc:'',days:D7,target:1,photo:'none',note:false,confirm:'',distinct:false,active:true,paused:false,archived:false,optional:false,...o});
+const OPT=[['Brush and floss teeth','Health','daily',2],['Complete a 10-minute room reset','Home','daily',2],['Stretch or do mobility work','Health','daily',2],['Practice a skill for 20 minutes','Growth','daily',3],['Prepare clothes and essentials for tomorrow','Life','daily',2],['Finish laundry and put it away','Home','weekly',4],['Review spending and transactions','Money','weekly',3],['Plan the upcoming week','Life','weekly',3],['Clean and organize the car','Home','weekly',4]];
+const SEED=[mk('bed','Make bed','Home','daily',1,{photo:'req'}),mk('bible','Read Bible','Growth','daily',1,{note:true,desc:'Optional: note what you read'}),mk('water','Drink 1 gallon of water','Health','daily',3,{desc:'Hydration goal'}),mk('book','Read one chapter of any book','Growth','daily',2,{note:true}),mk('ontime','Get to work on time','Work','daily',2,{days:'work',desc:'Self-reported'}),mk('workout','Work out','Health','daily',5,{days:[1,2,3,4,5]}),mk('friends','Text at least 3 friends','Social','weekly',3,{target:3,distinct:true,desc:'Each friend counts once'}),mk('room','Full clean room','Home','weekly',10,{days:[6,0],photo:'req'}),mk('hysa','Deposit at least $200 into an HYSA','Money','monthly',15,{confirm:'I deposited at least $200 into my HYSA this month.'}),...OPT.map((o,i)=>mk('opt'+i,o[0],o[1],o[2],o[3],{active:false,optional:true}))];
+async function seed(){const m=await all('meta');if(m.some(x=>x.id==='seeded'))return;await tx(['quests','meta'],o=>{SEED.forEach(q=>o.quests.put(q));o.meta.put({id:'seeded'})})}
+async function load(){
+ const [quests,comps,prog,ledger,reds,wish,meta]=await Promise.all(['quests','completions','progress','ledger','redemptions','wishlist','meta'].map(all));
+ S={quests,comps:Object.fromEntries(comps.map(c=>[c.id,c])),prog:Object.fromEntries(prog.map(p=>[p.id,p])),ledger,reds,wish,set:{workdays:[1,2,3,4,5],levelBase:50,...(meta.find(m=>m.id==='settings')||{})}};
+ curDay=dKey(new Date());render()}
+// ---- accounting (balances derived from ledger) ----
+const bal=()=>{let xp=0,pts=0;S.ledger.forEach(l=>{if(l.type==='earn'){xp+=l.xp;pts+=l.points}else pts-=l.points});return{xp,pts}};
+const lvl=xp=>Math.floor((1+Math.sqrt(1+8*xp/S.set.levelBase))/2),th=L=>S.set.levelBase*L*(L-1)/2;
+const days=q=>q.days==='work'?S.set.workdays:q.days;
+function qs(q){const n=new Date(),id=q.id+'|'+periodOf(q,n),pr=S.prog[id],done=!!S.comps[id],here=days(q).includes(n.getDay());
+ return{id,done,step:pr?pr.steps.length:0,pr,ok:!done&&q.active&&!q.paused&&here,locked:!done&&!here}}
+async function commit(q,{label,note,photo}){
+ const now=new Date(),p=periodOf(q,now),id=q.id+'|'+p;
+ if(S.comps[id])throw new Error('Already completed for this period');
+ const pr=S.prog[id]||{id,questId:q.id,period:p,steps:[]},steps=[...pr.steps,{ts:now.getTime(),label:label||''}],done=steps.length>=(q.target||1),pid=photo&&done?'ph|'+id+'|'+now.getTime():null;
+ await tx(['progress','completions','ledger','photos'],o=>{
+  o.progress.put({...pr,steps});
+  if(done){if(pid)o.photos.put({id:pid,data:photo});
+   o.completions.add({id,questId:q.id,name:q.name,cat:q.cat,freq:q.freq,period:p,ts:now.getTime(),points:q.points,note:note||'',photoId:pid,steps});
+   o.ledger.add({id:'c:'+id,ts:now.getTime(),type:'earn',points:q.points,xp:q.points,desc:q.name,ref:id})}});
+ return done}
+async function run(q,o){if(busy)return;busy=true;try{const L0=lvl(bal().xp),done=await commit(q,o);FX={done,qid:q.id,pts:q.points,L0};await load();closeM();
+  toast(done?`+${q.points} pts · ${esc(q.name)}`:`Logged ${S.prog[qs(q).id].steps.length}/${q.target}`);}
+ catch(e){const m=e&&e.name==='QuotaExceededError'?'Storage full. Export a backup and free space.':(e.message||'Could not save');$('#err')?$('#err').textContent=m:toast(m);await load()}finally{busy=false;FX=null}}
+// ---- feedback animations: purely visual, triggered only by a successful commit (FX is set in run()) ----
+const RM=()=>matchMedia('(prefers-reduced-motion:reduce)').matches,pctOf=(x,L)=>(x-th(L))/(th(L+1)-th(L))*100;
+function barTo(xp,L){const x=$('#xb'),go=!!(FX&&FX.done)&&!RM(),up=go&&L>FX.L0;x.classList.toggle('anim',go);
+ if(up){x.style.width='100%';setTimeout(()=>{const v=bal().xp;x.classList.remove('anim');x.style.width='0%';void x.offsetWidth;x.classList.add('anim');x.style.width=pctOf(v,lvl(v))+'%'},650)}else x.style.width=pctOf(xp,L)+'%'}
+function playFX(L){const f=FX;if(!f||!f.done)return;FX=null;
+ const c=$(`[data-qid="${f.qid}"]`);if(c)c.classList.add('just');
+ const g=$('#gn'),pp=$('#pp');g.innerHTML=`<b class="gain">+${f.pts}</b>`;pp.classList.add('bump');setTimeout(()=>{g.innerHTML='';pp.classList.remove('bump')},1300);
+ if(L>f.L0){const o=document.createElement('div');o.id='lvup';o.innerHTML=`<div><small>LEVEL UP</small><b>Level ${L}</b></div>`;document.body.appendChild(o);setTimeout(()=>o.remove(),2400)}}
+// ---- UI helpers ----
+const modal=h=>{$('#modal').innerHTML=`<div class="sheet">${h}</div>`;$('#modal').classList.add('open')};
+const closeM=()=>{$('#modal').classList.remove('open');PH=null;PEND=null};
+let tt;const toast=m=>{const t=$('#toast');t.textContent=m.replace(/&amp;/g,'&');t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200)};
+const fmt=ts=>new Date(ts).toLocaleString([],{dateStyle:'medium',timeStyle:'short'});
+const CI={Home:'🏠',Growth:'📖',Health:'💪',Work:'💼',Social:'💬',Money:'💰',Life:'✨'};
+function qcard(q,manage){const s=qs(q),t=q.target||1,st=s.done?'done':q.paused?'paused':s.locked?'locked':'ready';let b;
+ if(s.done)b='<span class="chip ok">✓ Completed</span>';else if(q.paused)b='<span class="chip">Paused</span>';else if(s.locked)b=`<span class="chip">${dn(days(q))}</span>`;
+ else b=`<button class="btn sm" data-a="do" data-id="${q.id}">${t>1?'Log':'Complete'}</button>`;
+ const tag=q.freq==='daily'?(days(q).length<7||q.days==='work'?dn(days(q)):'Daily'):q.freq==='weekly'?'Weekly':'Monthly';
+ return `<div class="card qc ${st}" data-qid="${esc(q.id)}"><div class="q"><div class="qi">${s.done?'✓':CI[q.cat]||'⭐'}</div><div class="qb"><b>${esc(q.name)}</b>${q.desc?`<small class="ds">${esc(q.desc)}</small>`:''}<div class="mt"><span class="pt">+${q.points}</span><span class="tg">${esc(q.cat)}</span><span class="tg">${tag}</span>${q.photo==='req'?'<span class="tg ph">📷 Photo required</span>':q.photo==='opt'?'<span class="tg ph">📷 Photo optional</span>':''}${q.note?'<span class="tg">📝 Note</span>':''}</div>${t>1?`<div class="bar"><i style="width:${(s.done?t:s.step)/t*100}%"></i></div><small>${s.done?t:s.step}/${t}</small>`:''}</div>${b}</div>${manage?`<button class="lnk" data-a="edit" data-id="${q.id}">Edit</button>`:''}</div>`}
+const active=()=>S.quests.filter(q=>q.active&&!q.archived);
+// ---- views ----
+const V={
+dash(){const n=new Date(),A=active(),st=A.map(q=>[q,qs(q)]),dl=st.filter(([q,s])=>q.freq==='daily'&&(s.done||s.ok)),dd=dl.filter(([,s])=>s.done).length;
+ const op=st.filter(([,s])=>s.ok),dn_=st.filter(([,s])=>s.done),lk=st.filter(([q,s])=>!s.done&&(s.locked||q.paused));
+ return `<div class="card hero"><div class="row"><b class="dt">${n.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})}</b><span class="chip">New day in <span id="cd"></span></span></div>
+ <div class="bar lg"><i style="width:${dl.length?dd/dl.length*100:0}%"></i></div><div class="row"><small>Today's daily quests</small><b class="fr">${dd}/${dl.length}</b></div></div>
+ <h2>Available now<span class="ct">${op.length}</span></h2>${op.map(([q])=>qcard(q)).join('')||'<div class="empty">Nothing left right now. Nice work.</div>'}
+ ${dn_.length?`<h2>Completed this period<span class="ct">${dn_.length}</span></h2>${dn_.map(([q])=>qcard(q)).join('')}`:''}
+ ${lk.length?`<h2>Not available today<span class="ct">${lk.length}</span></h2>${lk.map(([q])=>qcard(q)).join('')}`:''}`},
+quests(){const A=active();let h='<button class="btn" data-a="edit" data-id="">+ New quest</button>';
+ [['daily','Daily'],['weekly','Weekly'],['monthly','Monthly']].forEach(([f,t])=>{const l=A.filter(q=>q.freq===f);if(l.length)h+=`<h2>${t}</h2>`+l.map(q=>qcard(q,1)).join('')});
+ const op=S.quests.filter(q=>!q.active&&!q.archived);
+ if(op.length)h+='<h2>Optional quests</h2>'+op.map(q=>`<div class="card row"><div><b>${esc(q.name)}</b><br><small>${q.freq} · +${q.points} pts</small></div><button class="btn sm ghost" data-a="act" data-id="${q.id}">Activate</button></div>`).join('');
+ const ar=S.quests.filter(q=>q.archived);
+ if(ar.length)h+='<h2>Archived</h2>'+ar.map(q=>`<div class="card row"><b>${esc(q.name)}</b><button class="btn sm ghost" data-a="unarch" data-id="${q.id}">Restore</button></div>`).join('');
+ return h},
+shop(){const b=bal().pts;let h=`<div class="card hero"><small>Spendable points</small><div class="amt big">${b}</div><small>Reward tiers are spending limits for one non-food purchase or group of products, not cash.</small></div>`;
+ TIERS.forEach(([p,l])=>{const ok=b>=p;h+=`<div class="card tier${ok?' aff':''}"><div class="row"><div><b class="tp">${p.toLocaleString()} pts</b><br><small>Up to $${l} · one purchase or group</small></div><button class="btn sm" ${ok?'':'disabled'} data-a="redeem" data-p="${p}">Redeem</button></div><div class="bar"><i style="width:${Math.min(100,b/p*100)}%"></i></div><small>${ok?'Affordable':(p-b)+' more points needed'}</small></div>`});
+ h+=`<h2>Wishlist</h2>`+(S.wish.length?S.wish.map(w=>{const t=TIERS.find(t=>t[1]>=w.price);return `<div class="card row"><div><b>${esc(w.name)}</b> · $${(+w.price).toFixed(2)}<br><small>${t?`Fits the $${t[1]} tier (${t[0]} pts)${b>=t[0]?'':', '+(t[0]-b)+' more needed'}`:'Over the $500 tier'}${w.notes?'<br>'+esc(w.notes):''}</small></div><button class="lnk" data-a="wdel" data-id="${w.id}">Remove</button></div>`}).join(''):'<div class="empty">No wishlist items yet.</div>')
+ +`<div class="card"><label>Item<input id="w-n" maxlength="80"></label><label>Actual price ($)<input id="w-p" type="number" min="0" step="0.01" inputmode="decimal"></label><label>Notes or link<input id="w-t" maxlength="300"></label><div id="err"></div><button class="btn" data-a="wadd">Add to wishlist</button></div>`
+ +`<h2>Redemption history</h2>`+(S.reds.length?S.reds.slice().sort((a,b)=>b.ts-a.ts).map(r=>`<div class="card"><div class="row"><b>${esc(r.item)}</b><span class="amt neg">−${r.points}</span></div><small>${fmt(r.ts)} · limit $${r.limit}${r.amount!=null?' · spent $'+r.amount.toFixed(2):''}</small></div>`).join(''):'<div class="empty">No redemptions yet.</div>');return h},
+history(){const L=S.ledger.slice().sort((a,b)=>b.ts-a.ts);if(!L.length)return '<div class="empty">Complete a quest and it will show up here.</div>';
+ return L.map(l=>{const c=S.comps[l.ref],e=l.type==='earn';return `<div class="card"><div class="row"><b>${esc(l.desc)}</b><span class="amt ${e?'pos':'neg'}">${e?'+':'−'}${l.points}</span></div><small>${fmt(l.ts)}${c?' · '+({daily:'Day',weekly:'Week of',monthly:'Month'}[c.freq])+' '+c.period:' · Reward'}</small>${c&&c.note?`<div>“${esc(c.note)}”</div>`:''}${c&&c.photoId?`<br><button class="lnk" data-a="vph" data-id="${esc(c.id)}">View photo</button>`:''}</div>`}).join('')},
+settings(){const s=S.set,th_=localStorage.theme||'dark';let lt='';for(let L=1;L<=8;L++)lt+=`<small>Lv ${L}: ${th(L)} XP</small><br>`;
+ return `<div class="card"><label>Theme<select id="th"><option value="dark" ${th_==='dark'?'selected':''}>Dark</option><option value="light" ${th_==='light'?'selected':''}>Light</option></select></label></div>
+ <div class="card"><b>Workdays</b><br><small>Used by “Get to work on time”. Weeks always start Monday.</small><div class="days">${ORD.map(d=>`<button class="day ${s.workdays.includes(d)?'on':''}" data-a="wd" data-d="${d}">${DN[d][0]}</button>`).join('')}</div></div>
+ <div class="card"><label>Level curve: XP for level 2<input id="lb" type="number" min="5" max="1000" value="${s.levelBase}"></label>${lt}<small>Level N needs base × N × (N−1) ÷ 2 XP.</small></div>
+ <div class="card"><b>Backup</b><br><small>Your data lives only in this browser. Clearing Safari website data or losing the phone erases it. Theme and the last-backup date are saved separately and are not in the backup. Export regularly${localStorage.lastBackup?' (last: '+localStorage.lastBackup+')':''}.</small><br><br><div class="row"><button class="btn" data-a="exp">Export backup</button><button class="btn ghost" data-a="impb">Restore</button></div></div>
+ <div class="card"><b>Storage</b><br><small id="stor">Checking…</small><br><button class="lnk" data-a="persist">Request persistent storage</button></div>
+ <div class="card"><button class="btn bad" data-a="clr">Erase all data</button></div>`}};
+const TIERS=[[250,25],[500,50],[1000,100],[2500,250],[5000,500]];
+const ic=p=>`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const NAV=[['dash',ic('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>'),'Today'],['quests',ic('<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>'),'Quests'],['shop',ic('<path d="M5 8h14l-1 12H6L5 8zM9 8a3 3 0 016 0"/>'),'Shop'],['history',ic('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),'History'],['settings',ic('<path d="M4 8h9M18 8h2M4 16h2M11 16h9"/><circle cx="15.5" cy="8" r="2"/><circle cx="8.5" cy="16" r="2"/>'),'Settings']];
+function render(){const{xp,pts}=bal(),L=lvl(xp),a=th(L),b=th(L+1);
+ $('#lv').textContent=L;$('#pp').textContent=pts;$('#xt').textContent=`Level ${L}`;barTo(xp,L);$('#xs').textContent=`${xp} XP · ${b-xp} to level ${L+1}`;
+ $('#main').innerHTML=V[view]();$('#nav').innerHTML=NAV.map(([k,i,t])=>`<button class="${k===view?'on':''}" data-a="nav" data-v="${k}"><span>${i}</span>${t}</button>`).join('');tick();playFX(L);
+ if(view==='settings')navigator.storage?.estimate?.().then(e=>{const el=$('#stor');if(el)el.textContent=`Using ${(e.usage/1048576).toFixed(1)} MB of about ${(e.quota/1048576).toFixed(0)} MB available.`})}
+function tick(){const n=new Date();if(S.quests&&dKey(n)!==curDay){load();return}const el=$('#cd');if(el){const ms=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1)-n,h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);el.textContent=`${h}h ${m}m`}}
+// ---- actions ----
+const qOf=id=>S.quests.find(q=>q.id===id);
+const A={
+nav(d){view=d.v;render();scrollTo(0,0)},
+do(d){const q=qOf(d.id),s=qs(q);if(!s.ok)return;const t=q.target||1,last=s.step+1>=t,ask=t>1&&q.distinct;
+ if(!(last&&(q.photo!=='none'||q.note||q.confirm))&&!ask)return run(q,{});
+ modal(`<h3>${esc(q.name)}</h3>${q.desc?`<small>${esc(q.desc)}</small>`:''}${ask?`<label>Friend's name<input id="f-l" maxlength="40" autocomplete="off"></label>`:''}
+ ${last&&q.photo!=='none'?`<label>Photo ${q.photo==='req'?'(required)':'(optional)'}<input id="f-ph" type="file" accept="image/*"></label><img id="pv" hidden alt="Preview">`:''}
+ ${last&&q.note?`<label>Note (optional)<textarea id="f-nt" rows="3" maxlength="1000"></textarea></label>`:''}
+ ${last&&q.confirm?`<label><input type="checkbox" id="f-ok">${esc(q.confirm)}</label>`:''}
+ <div id="err"></div><div class="row"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="go" data-id="${q.id}">${t>1&&!last?'Log':'Complete'}</button></div>`)},
+go(d){const q=qOf(d.id),s=qs(q);if(!s.ok)return closeM();const E=m=>$('#err').textContent=m,o={};
+ if($('#f-l')){o.label=$('#f-l').value.trim();if(!o.label)return E('Enter a name.');if((s.pr?s.pr.steps:[]).some(x=>x.label.toLowerCase()===o.label.toLowerCase()))return E('That one is already counted.')}
+ if($('#f-ph')){if(q.photo==='req'&&!PH)return E('A photo is required for this quest.');o.photo=PH}
+ if($('#f-nt'))o.note=$('#f-nt').value.trim();if($('#f-ok')&&!$('#f-ok').checked)return E('Please confirm to continue.');run(q,o)},
+close:closeM,
+edit(d){EQ=qOf(d.id)||{id:'u'+Date.now(),name:'',desc:'',cat:'Life',freq:'daily',points:2,days:[...D7],target:1,photo:'none',note:false,confirm:'',distinct:false,active:true,paused:false,archived:false,isNew:true};const q=EQ,ds=q.days==='work'?[...D7]:q.days;
+ modal(`<h3>${q.isNew?'New quest':'Edit quest'}</h3><label>Name<input id="e-n" maxlength="60" value="${esc(q.name)}"></label><label>Description<input id="e-d" maxlength="200" value="${esc(q.desc)}"></label><label>Category<input id="e-c" maxlength="20" value="${esc(q.cat)}"></label>
+ <label>Points (1–100)<input id="e-p" type="number" min="1" max="100" value="${q.points}" inputmode="numeric"></label>
+ <label>Frequency<select id="e-f">${['daily','weekly','monthly'].map(f=>`<option ${q.freq===f?'selected':''}>${f}</option>`).join('')}</select></label>
+ <label>Available days</label><div class="days">${ORD.map(x=>`<button class="day ${ds.includes(x)?'on':''}" data-a="tday">${DN[x][0]}<i hidden>${x}</i></button>`).join('')}</div>
+ <label><input type="checkbox" id="e-w" ${q.days==='work'?'checked':''}>Use my workdays setting</label>
+ <label>Times to complete per period<input id="e-t" type="number" min="1" max="31" value="${q.target||1}"></label><label><input type="checkbox" id="e-di" ${q.distinct?'checked':''}>Each step needs a different name</label>
+ <label>Photo proof<select id="e-ph">${[['none','None'],['opt','Optional'],['req','Required']].map(([v,t])=>`<option value="${v}" ${q.photo===v?'selected':''}>${t}</option>`).join('')}</select></label>
+ <label><input type="checkbox" id="e-nt" ${q.note?'checked':''}>Offer an optional note</label><label>Confirmation statement (optional)<input id="e-cf" maxlength="120" value="${esc(q.confirm)}"></label>
+ <div id="err"></div><button class="btn" data-a="saveq" style="width:100%">Save quest</button>
+ ${q.isNew?'':`<div class="row" style="margin-top:10px"><button class="btn ghost" data-a="pause" data-id="${q.id}">${q.paused?'Resume':'Pause'}</button><button class="btn ghost" data-a="arch" data-id="${q.id}">Archive</button><button class="btn ghost" data-a="del" data-id="${q.id}">Delete</button></div>`}`)},
+tday(d,el){el.classList.toggle('on')},
+async saveq(){const E=m=>$('#err').textContent=m,name=$('#e-n').value.trim(),pts=+$('#e-p').value,tg=+$('#e-t').value,w=$('#e-w').checked,ds=$$('.sheet .day.on').map(b=>+b.querySelector('i').textContent);
+ if(!name)return E('Name is required.');if(!Number.isInteger(pts)||pts<1||pts>100)return E('Points must be a whole number from 1 to 100.');if(!Number.isInteger(tg)||tg<1||tg>31)return E('Times must be 1–31.');if(!w&&!ds.length)return E('Pick at least one day.');
+ const q={...EQ,name,desc:$('#e-d').value.trim(),cat:$('#e-c').value.trim()||'Life',points:pts,freq:$('#e-f').value,days:w?'work':ds,target:tg,distinct:$('#e-di').checked,photo:$('#e-ph').value,note:$('#e-nt').checked,confirm:$('#e-cf').value.trim()};delete q.isNew;
+ try{await tx(['quests'],o=>o.quests.put(q));closeM();await load()}catch(e){E('Could not save. Storage may be full.')}},
+async pause(d){const q=qOf(d.id);await tx(['quests'],o=>o.quests.put({...q,paused:!q.paused}));closeM();load()},
+async arch(d){if(!confirm('Archive this quest? History is kept.'))return;await tx(['quests'],o=>o.quests.put({...qOf(d.id),archived:true,active:false}));closeM();load()},
+async unarch(d){await tx(['quests'],o=>o.quests.put({...qOf(d.id),archived:false,active:true}));load()},
+async act(d){await tx(['quests'],o=>o.quests.put({...qOf(d.id),active:true}));load()},
+async del(d){if(!confirm('Delete this quest definition? Past completions and points are kept.'))return;await tx(['quests'],o=>o.quests.delete(d.id));closeM();load()},
+redeem(d){const p=+d.p,l=TIERS.find(t=>t[0]===p)[1];modal(`<h3>Redeem ${p} points</h3><small>One non-food purchase or group of products totaling $${l} or less.</small><label>What did you buy?<input id="r-i" maxlength="150"></label><label>Actual total (optional, $)<input id="r-a" type="number" min="0" step="0.01" inputmode="decimal"></label><label><input type="checkbox" id="r-f">This is not food</label><div id="err"></div><div class="row"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="rgo" data-p="${p}">Spend ${p} points</button></div>`)},
+async rgo(d){if(busy)return;const p=+d.p,l=TIERS.find(t=>t[0]===p)[1],E=m=>$('#err').textContent=m,item=$('#r-i').value.trim(),av=$('#r-a').value,amt=av===''?null:+av;
+ if(!item)return E('Describe the purchase.');if(!$('#r-f').checked)return E('Food purchases are not eligible.');if(amt!==null&&(!(amt>=0)||amt>l))return E(`Amount must be between $0 and $${l}.`);if(bal().pts<p)return E('Not enough points.');
+ busy=true;try{const id='r'+Date.now();await tx(['redemptions','ledger'],o=>{o.redemptions.add({id,ts:Date.now(),tier:p,limit:l,points:p,item,amount:amt});o.ledger.add({id:'s:'+id,ts:Date.now(),type:'spend',points:p,xp:0,desc:'Reward: '+item,ref:id})});closeM();await load();toast('Reward redeemed')}catch(e){E('Could not save redemption.')}finally{busy=false}},
+async wadd(){const n=$('#w-n').value.trim(),p=+$('#w-p').value;if(!n||!(p>0)){$('#err').textContent='Enter a name and a price above $0.';return}await tx(['wishlist'],o=>o.wishlist.put({id:'w'+Date.now(),name:n,price:p,notes:$('#w-t').value.trim()}));load()},
+async wdel(d){await tx(['wishlist'],o=>o.wishlist.delete(d.id));load()},
+async vph(d){const c=S.comps[d.id],p=await getP(c.photoId);modal(p?`<h3>${esc(c.name)}</h3><img src="${p.data}" alt="Proof photo"><div class="row"><button class="btn ghost" data-a="close">Close</button><button class="btn ghost" data-a="dph" data-id="${esc(c.id)}">Delete photo</button></div>`:'<h3>Photo missing</h3><button class="btn" data-a="close">Close</button>')},
+async dph(d){if(!confirm('Delete this photo? The completion and points stay.'))return;const c=S.comps[d.id];await tx(['photos','completions'],o=>{o.photos.delete(c.photoId);o.completions.put({...c,photoId:null})});closeM();load()},
+async wd(d){const x=+d.d,w=S.set.workdays,n=w.includes(x)?w.filter(y=>y!==x):[...w,x];if(!n.length)return;await tx(['meta'],o=>o.meta.put({id:'settings',...S.set,workdays:n}));load()},
+async exp(){const data={};for(const s of STORES)data[s]=await all(s);const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({app:'dailyquest',version:1,exported:new Date().toISOString(),data})],{type:'application/json'}));a.download=`daily-quest-backup-${dKey(new Date())}.json`;a.click();localStorage.lastBackup=dKey(new Date());toast('Backup exported');render()},
+impb(){$('#imp').click()},
+async persist(){const ok=await navigator.storage?.persist?.();toast(ok?'Persistent storage granted':'Browser did not grant it')},
+async rexp(){try{await A.exp();const e=$('#rx');if(e)e.textContent='Exported ✓'}catch(e){const m=$('#err');if(m)m.textContent='Could not export. Cancel and free some space first.'}},
+async rest(){if(!PEND||busy)return;busy=true;const j=PEND;let ok=false;
+ try{await tx(STORES,o=>{STORES.forEach(n=>{o[n].clear();j.data[n].forEach(x=>o[n].put(x))});if(!j.data.meta.some(m=>m.id==='seeded'))o.meta.put({id:'seeded'})});ok=true}
+ catch(e){busy=false;closeM();return BKERR('The restore could not finish ('+((e&&e.name)||'error')+'). Your previous data was kept.')}
+ busy=false;closeM();await load();toast('Backup restored')},
+async clr(){if(prompt('This erases everything: quests, history, points, photos. Type DELETE to confirm.')!=='DELETE')return;await tx(STORES,o=>STORES.forEach(s=>o[s].clear()));await seed();await load();toast('All data erased')}};
+document.addEventListener('click',e=>{if(e.target.id==='modal')return closeM();const a=e.target.closest('[data-a]');if(a&&A[a.dataset.a])A[a.dataset.a](a.dataset,a)});
+document.addEventListener('change',async e=>{const t=e.target;
+ if(t.id==='f-ph'&&t.files[0]){try{PH=await shrink(t.files[0]);const p=$('#pv');p.src=PH;p.hidden=false}catch(x){PH=null;$('#err').textContent='Could not read that image.'}}
+ if(t.id==='th'){localStorage.theme=t.value;document.documentElement.dataset.theme=t.value}
+ if(t.id==='lb'){const v=+t.value;if(v>=5&&v<=1000){await tx(['meta'],o=>o.meta.put({id:'settings',...S.set,levelBase:Math.round(v)}));load()}}
+ if(t.id==='imp'&&t.files[0]){await imp(t.files[0]);t.value=''}});
+const shrink=f=>new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const s=Math.min(1,1280/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',.78))};i.onerror=()=>rej();i.src=u});
+// ---- backup validation (runs BEFORE any data is touched) ----
+const isStr=v=>typeof v==='string',isNum=v=>typeof v==='number'&&Number.isFinite(v),isInt=(v,a,b)=>Number.isInteger(v)&&v>=a&&v<=b,isObj=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
+const optB=v=>v===undefined||typeof v==='boolean',optS=v=>v===undefined||isStr(v);
+const FREQ=['daily','weekly','monthly'],PRE={daily:/^\d{4}-\d\d-\d\d$/,weekly:/^\d{4}-\d\d-\d\d$/,monthly:/^\d{4}-\d\d$/};
+const okDays=a=>Array.isArray(a)&&a.length>0&&a.length<=7&&a.every(x=>isInt(x,0,6))&&new Set(a).size===a.length;
+const okSteps=a=>Array.isArray(a)&&a.length<=31&&a.every(t=>isObj(t)&&isNum(t.ts)&&isStr(t.label));
+const first=l=>{for(const[ok,m]of l)if(!ok)return m;return ''};
+const RULES={
+quests:q=>first([[/^[A-Za-z0-9_-]{1,60}$/.test(q.id),'id may only use letters, numbers, - and _'],[isStr(q.name)&&q.name.trim()&&q.name.length<=60,'name is missing or invalid'],[isStr(q.cat)&&q.cat.length<=60,'category is missing or invalid'],[FREQ.includes(q.freq),'frequency must be daily, weekly or monthly'],[isInt(q.points,1,100),'points must be a whole number from 1 to 100'],[q.days==='work'||okDays(q.days),'days are invalid'],[isInt(q.target,1,31),'target must be a whole number from 1 to 31'],[['none','opt','req'].includes(q.photo),'photo setting is invalid'],[optS(q.desc)&&optS(q.confirm),'text fields are invalid'],[optB(q.note)&&optB(q.distinct)&&optB(q.active)&&optB(q.paused)&&optB(q.archived)&&optB(q.optional),'yes/no fields are invalid']]),
+completions:c=>first([[isStr(c.questId)&&isStr(c.name)&&optS(c.cat),'quest fields are invalid'],[FREQ.includes(c.freq),'frequency is invalid'],[isStr(c.period)&&PRE[c.freq]&&PRE[c.freq].test(c.period),'period is invalid'],[c.id===c.questId+'|'+c.period,'id does not match quest and period'],[isNum(c.ts)&&c.ts>0,'timestamp is invalid'],[isInt(c.points,0,1e6),'points are invalid'],[optS(c.note),'note is invalid'],[c.photoId==null||isStr(c.photoId),'photo reference is invalid'],[okSteps(c.steps)&&c.steps.length>=1,'steps are invalid']]),
+progress:p=>first([[isStr(p.questId)&&isStr(p.period)&&/^\d{4}-\d\d(-\d\d)?$/.test(p.period),'quest or period is invalid'],[p.id===p.questId+'|'+p.period,'id does not match quest and period'],[okSteps(p.steps),'steps are invalid']]),
+ledger:l=>first([[l.type==='earn'||l.type==='spend','type must be earn or spend'],[isNum(l.ts)&&l.ts>0,'timestamp is invalid'],[isInt(l.points,0,1e6),'points must be a whole number of 0 or more'],[isNum(l.xp)&&l.xp>=0,'xp is invalid'],[l.type==='earn'?l.xp===l.points:l.xp===0,'xp does not match the point rules'],[isStr(l.desc)&&isStr(l.ref),'description or reference is invalid'],[l.id===(l.type==='earn'?'c:':'s:')+l.ref,'id does not match its reference']]),
+redemptions:r=>first([[isNum(r.ts)&&r.ts>0,'timestamp is invalid'],[TIERS.some(t=>t[0]===r.tier&&t[1]===r.limit),'tier and spending limit do not match a reward tier'],[r.points===r.tier,'points do not match the tier'],[isStr(r.item)&&r.item.trim().length>0,'item is missing'],[r.amount===null||(isNum(r.amount)&&r.amount>=0&&r.amount<=r.limit),'amount is invalid']]),
+wishlist:w=>first([[isStr(w.name)&&w.name.trim().length>0,'name is missing'],[isNum(w.price)&&w.price>0,'price must be above 0'],[optS(w.notes),'notes are invalid']]),
+photos:p=>first([[isStr(p.data)&&/^data:image\/(jpeg|png|webp);base64,/.test(p.data),'photo data is not an image']]),
+meta:m=>m.id==='seeded'?'':m.id==='settings'?first([[okDays(m.workdays),'workdays are invalid'],[isInt(m.levelBase,5,1000),'level base must be a whole number from 5 to 1000']]):'unknown setting "'+String(m.id).slice(0,30)+'"'};
+function validateBackup(j){
+ if(!isObj(j)||j.app!=='dailyquest')return 'This is not a Daily Quest backup file.';
+ if(!Number.isInteger(j.version)||j.version<1)return 'The backup has no valid version number.';
+ if(j.version>1)return 'This backup was made by a newer version of the app (format '+j.version+'). Update the app first.';
+ if(!isObj(j.data))return 'The backup has no data section.';
+ for(const st of STORES){const a=j.data[st];if(!Array.isArray(a))return `The "${st}" section is missing or not a list.`;
+  const seen=new Set();for(let i=0;i<a.length;i++){const x=a[i],w=`${st} record ${i+1}: `;
+   if(!isObj(x)||!isStr(x.id)||!x.id||x.id.length>300)return w+'must be an object with a text id.';
+   if(seen.has(x.id))return w+'duplicate id.';seen.add(x.id);const m=RULES[st](x);if(m)return w+m+'.'}}
+ const D=j.data,C=Object.fromEntries(D.completions.map(c=>[c.id,c])),R=Object.fromEntries(D.redemptions.map(r=>[r.id,r])),L=Object.fromEntries(D.ledger.map(l=>[l.id,l]));let e=0,sp=0;
+ for(const l of D.ledger){if(l.type==='earn'){e+=l.points;if(!C[l.ref]||C[l.ref].points!==l.points)return `ledger entry "${l.id}" has no matching completion.`}else{sp+=l.points;if(!R[l.ref]||R[l.ref].points!==l.points)return `ledger entry "${l.id}" has no matching redemption.`}}
+ for(const c of D.completions)if(!L['c:'+c.id])return `completion "${c.id}" has no point entry.`;
+ for(const r of D.redemptions)if(!L['s:'+r.id])return `redemption "${r.id}" has no point entry.`;
+ if(sp>e)return 'Spent points exceed earned points, so the balance would be negative.';
+ return ''}
+const BKERR=m=>modal(`<h3>Backup not restored</h3><p>${esc(m)}</p><p><small>Nothing was changed. Your current data is untouched.</small></p><button class="btn" data-a="close" style="width:100%">Close</button>`);
+async function imp(f){let j;
+ try{j=JSON.parse(await f.text())}catch(e){return BKERR('That file is not valid JSON, so it cannot be a Daily Quest backup.')}
+ const err=validateBackup(j);if(err)return BKERR(err);
+ PEND=j;const d=j.data;
+ modal(`<h3>Replace current data?</h3><p>Restoring <b>replaces everything currently in this app</b>: quests, history, points, photos, wishlist, redemptions, and the workday and level settings.</p><p><small>Backup from ${esc(isStr(j.exported)?j.exported.slice(0,10):'unknown date')}: ${d.quests.length} quests, ${d.completions.length} completions, ${d.photos.length} photos, ${d.redemptions.length} redemptions, ${d.wishlist.length} wishlist items. Theme and last-backup date are stored separately on this device, are not in the backup, and stay as they are.</small></p>
+ <div class="row"><button class="btn ghost" data-a="rexp">Export current data first</button><small id="rx"></small></div><div id="err"></div>
+ <div class="row" style="margin-top:12px"><button class="btn ghost" data-a="close">Cancel</button><button class="btn bad" data-a="rest">Replace data</button></div>`)}
+// ---- refresh triggers ----
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&db)load()});
+addEventListener('pageshow',()=>{if(db)load()});addEventListener('focus',()=>{if(db)tick()});setInterval(tick,15000);
+document.documentElement.dataset.theme=localStorage.theme||'dark';
+(async()=>{try{db=await openDB();await seed();await load()}catch(e){$('#main').innerHTML='<div class="card"><b>Storage unavailable</b><br>This browser is blocking local storage (private mode?). Open the app in a normal Safari tab.</div>';return}
+ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{})})();
+</script></body></html>
